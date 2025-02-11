@@ -33,13 +33,19 @@ class MusicPlayer {
         this.sfxVolume = 1;
         this.musicVolume = 0.5;
         this.masterVolume = 1;
+
+        this.musicEnabled = true;
+        this.sfxEnabled = true;
+        this.titlesEnabled = true;
+
+        this.skipCurrentSong = false;
     };
 
     playSFX(name) {
         var url = `/api/theme/assets/mp3/${ name }`;
 
         var audio = new Audio(url);
-        audio.volume = this.sfxVolume * this.masterVolume;
+        audio.volume = this.sfxEnabled == false ? 0 : this.sfxVolume * this.masterVolume;
         audio.play();
     };
 
@@ -49,9 +55,9 @@ class MusicPlayer {
         var url = `/src/music_player/songs/${ random.url }`;*/
         var name = random.split(".")[0];
         var url = `/api/theme/assets/mp3/songs/${ random }`;
-        var volume = this.musicVolume * this.masterVolume;
+        var volume = this.musicEnabled == false ? 0 : this.musicVolume * this.masterVolume;
 
-        WebStation.menu.createToast( "Now playing: " + name );
+        if ( this.titlesEnabled == true ) WebStation.menu.createToast( "Now playing: " + name );
 
         var audio = new Audio(url);
         fadeIn(audio, volume, 500, 2000, 3000);
@@ -66,11 +72,19 @@ class MusicPlayer {
             var fadeAudio = setInterval(function () {
 
                 if (audio.currentTime >= fadePoint) {
+                    clearInterval(fadeAudio);
                     fadeOut(audio, volume, 0, 2000, 3000);
 
-                    setTimeout(() => clearInterval(fadeAudio), 2000);
-                } else if ( audio.volume !== scope.musicVolume * scope.masterVolume ) {
-                    audio.volume = scope.musicVolume * scope.masterVolume;
+                    setTimeout(() => scope.playRandom(), 2000);
+                } else if ( scope.skipCurrentSong == true ) {
+                    scope.skipCurrentSong = false;
+
+                    clearInterval(fadeAudio);
+                    fadeOut(audio, volume, 0, 2000, 3000);
+
+                    setTimeout(() => scope.playRandom(), 2000);
+                } else if ( audio.volume !== scope.musicEnabled == false ? 0 : (scope.musicVolume * scope.masterVolume) ) {
+                    audio.volume = scope.musicEnabled == false ? 0 : (scope.musicVolume * scope.masterVolume);
                 };
 
             }, 200);
