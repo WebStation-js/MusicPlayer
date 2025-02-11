@@ -29,13 +29,17 @@ function fadeOut(audioElement, maxVol, startDelay, fadeOutTime, steps) {
 }
 
 class MusicPlayer {
-    constructor() {};
+    constructor() {
+        this.sfxVolume = 1;
+        this.musicVolume = 0.5;
+        this.masterVolume = 1;
+    };
 
     playSFX(name) {
         var url = `/api/theme/assets/mp3/${ name }`;
 
         var audio = new Audio(url);
-        audio.volume = 1;
+        audio.volume = this.sfxVolume * this.masterVolume;
         audio.play();
     };
 
@@ -45,11 +49,12 @@ class MusicPlayer {
         var url = `/src/music_player/songs/${ random.url }`;*/
         var name = random.split(".")[0];
         var url = `/api/theme/assets/mp3/songs/${ random }`;
+        var volume = this.musicVolume * this.masterVolume;
 
         WebStation.menu.createToast( "Now playing: " + name );
 
         var audio = new Audio(url);
-        fadeIn(audio, 0.5, 500, 2000, 3000);
+        fadeIn(audio, volume, 500, 2000, 3000);
         audio.volume = 0;
         audio.loop = true;
         audio.play();
@@ -60,9 +65,11 @@ class MusicPlayer {
             var fadeAudio = setInterval(function () {
 
                 if (audio.currentTime >= fadePoint) {
-                    fadeOut(audio, 0.5, 0, 2000, 3000);
+                    fadeOut(audio, volume, 0, 2000, 3000);
 
                     setTimeout(() => clearInterval(fadeAudio), 2000);
+                } else if ( audio.volume !== volume ) {
+                    audio.volume = volume;
                 };
 
             }, 200);
