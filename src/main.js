@@ -59,6 +59,7 @@ class MusicPlayer {
         audio.loop = true;
         audio.play();
 
+        var scope = this;
         setTimeout(() => {
             var fadePoint = audio.duration - 2; 
 
@@ -68,8 +69,8 @@ class MusicPlayer {
                     fadeOut(audio, volume, 0, 2000, 3000);
 
                     setTimeout(() => clearInterval(fadeAudio), 2000);
-                } else if ( audio.volume !== volume ) {
-                    audio.volume = volume;
+                } else if ( audio.volume !== scope.musicVolume * scope.masterVolume ) {
+                    audio.volume = scope.musicVolume * scope.masterVolume;
                 };
 
             }, 200);
