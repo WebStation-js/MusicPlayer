@@ -75,14 +75,14 @@ class MusicPlayer {
                     clearInterval(fadeAudio);
                     fadeOut(audio, volume, 0, 2000, 3000);
 
-                    setTimeout(() => scope.playRandom(), 2000);
+                    setTimeout(() => scope.playRandom(), 4000);
                 } else if ( scope.skipCurrentSong == true ) {
                     scope.skipCurrentSong = false;
 
                     clearInterval(fadeAudio);
                     fadeOut(audio, volume, 0, 2000, 3000);
 
-                    setTimeout(() => scope.playRandom(), 2000);
+                    setTimeout(() => scope.playRandom(), 4000);
                 } else if ( audio.volume !== scope.musicEnabled == false ? 0 : (scope.musicVolume * scope.masterVolume) ) {
                     audio.volume = scope.musicEnabled == false ? 0 : (scope.musicVolume * scope.masterVolume);
                 };
